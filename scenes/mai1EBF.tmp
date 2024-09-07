@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3 uid="uid://btup0vbh2kcb"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_7ljo0"]
+[ext_resource type="PackedScene" uid="uid://ruywunlp6wqx" path="res://scenes/hitter.tscn" id="2_3cwgs"]
+[ext_resource type="Script" path="res://scenes/TopCamera.gd" id="2_73lrt"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bhoom"]
+rough = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vqb3i"]
+size = Vector3(260, 10, 100)
+
+[sub_resource type="BoxMesh" id="BoxMesh_f3lxr"]
+size = Vector3(260, 10, 100)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_7ljo0")
+
+[node name="SchoolDesk" type="StaticBody3D" parent="."]
+disable_mode = 1
+physics_material_override = SubResource("PhysicsMaterial_bhoom")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SchoolDesk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0394859, 0, -0.00430298)
+shape = SubResource("BoxShape3D_vqb3i")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SchoolDesk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.48098, 0, 0)
+mesh = SubResource("BoxMesh_f3lxr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.454037, 0.890983, 0, -0.890983, 0.454037, 0, 60.6236, -126.861)
+light_energy = 5.0
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.980512, 0.19646, 0, -0.19646, 0.980512, 0, 60.6236, 142.855)
+light_energy = 5.0
+
+[node name="TopCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -2, 175.052, -2.05856)
+projection = 1
+size = 150.0
+far = 1000.0
+script = ExtResource("2_73lrt")
+
+[node name="FrontCamera" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -208.239, 47.8848, 0)
+projection = 1
+size = 100.0
+
+[node name="PlayerViewCamera" type="Camera3D" parent="."]
+transform = Transform3D(0.586737, 0.23168, -0.775928, 0.0478462, 0.946606, 0.318821, 0.808363, -0.224189, 0.544323, -159.672, 43.9513, 63.4457)
+size = 100.0
+
+[node name="Hitter" parent="." instance=ExtResource("2_3cwgs")]
+transform = Transform3D(2.51871, 0, 0, 0, 21.0442, 0, 0, 0, 5.45199, 0, 5.99543, 0)

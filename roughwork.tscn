@@ -1,0 +1,92 @@
+[gd_scene load_steps=14 format=3 uid="uid://b3d5pktydawy8"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_lulwc"]
+
+[sub_resource type="Sky" id="Sky_0v4b2"]
+sky_material = SubResource("PhysicalSkyMaterial_lulwc")
+
+[sub_resource type="Environment" id="Environment_02t6r"]
+background_mode = 2
+background_energy_multiplier = 4.58
+sky = SubResource("Sky_0v4b2")
+ambient_light_source = 3
+ambient_light_color = Color(0.256617, 0.834368, 0.955918, 1)
+ambient_light_energy = 5.57
+ssr_enabled = true
+glow_enabled = true
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_2628c"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ij8jr"]
+size = Vector3(10, 1, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2oofi"]
+size = Vector3(10, 1, 20)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_h2pto"]
+rough = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_j875c"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lufbt"]
+albedo_color = Color(1.92523e-06, 0.458379, 0.568913, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_0igfp"]
+material = SubResource("StandardMaterial3D_lufbt")
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_t2ljq"]
+rough = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2jkdt"]
+albedo_color = Color(0.634463, 0.308118, 0.0728508, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_nyfnv"]
+material = SubResource("StandardMaterial3D_2jkdt")
+
+[node name="Node3D" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.582676, 0.812704, 0, -0.812704, 0.582676, 0, 5.73832, 7.87628)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_02t6r")
+camera_attributes = SubResource("CameraAttributesPractical_2628c")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.999995, 0.00103816, -0.00311265, 0.000576881, 0.878225, 0.478247, 0.0032301, -0.478246, 0.87822, -0.282925, 3.54613, 13.019)
+
+[node name="Platform" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platform"]
+shape = SubResource("BoxShape3D_ij8jr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Platform"]
+custom_aabb = AABB(10, 0, 10, 0, 0, 0)
+mesh = SubResource("BoxMesh_2oofi")
+
+[node name="Pill" type="RigidBody3D" parent="."]
+transform = Transform3D(0.859228, 0.511593, 0, -0.511593, 0.859228, 0, 0, 0, 1, -2, 5.47556, -6)
+physics_material_override = SubResource("PhysicsMaterial_h2pto")
+angular_damp = 5.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pill"]
+transform = Transform3D(0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_j875c")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pill"]
+transform = Transform3D(0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_0igfp")
+
+[node name="Pill2" type="RigidBody3D" parent="."]
+transform = Transform3D(0.859228, 0.511593, 0, -0.511593, 0.859228, 0, 0, 0, 1, 1.6199, 5.85769, -6)
+physics_material_override = SubResource("PhysicsMaterial_t2ljq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pill2"]
+transform = Transform3D(0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_j875c")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pill2"]
+transform = Transform3D(0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_nyfnv")

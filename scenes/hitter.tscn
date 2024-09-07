@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://ruywunlp6wqx"]
+
+[ext_resource type="Script" path="res://scripts/hitter.gd" id="1_8gbef"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8s7kx"]
+albedo_color = Color(0, 0, 0, 0)
+
+[sub_resource type="PrismMesh" id="PrismMesh_06sqy"]
+
+[node name="Hitter" type="Node3D"]
+transform = Transform3D(2.51871, 0, 0, 0, 21.0442, 0, 0, 0, 5.45199, 0, 0, 0)
+top_level = true
+script = ExtResource("1_8gbef")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.746, 1.50996e-07, -2.37608e-16, 0, -4.37114e-08, -0.036, -1.12643e-07, -1, 1.57361e-09, 0, 0, -2.44299)
+material_override = SubResource("StandardMaterial3D_8s7kx")
+mesh = SubResource("PrismMesh_06sqy")

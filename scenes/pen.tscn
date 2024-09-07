@@ -1,0 +1,79 @@
+[gd_scene load_steps=8 format=3 uid="uid://b8arxaa6u4qve"]
+
+[ext_resource type="Script" path="res://scripts/Pen.gd" id="1_d1mvv"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6e33b"]
+rough = true
+bounce = 0.38
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_u64jm"]
+radius = 1.0
+height = 13.9
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gxcr5"]
+radius = 1.0
+height = 6.0
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cto0j"]
+rough = true
+bounce = 0.38
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_xi0d4"]
+radius = 1.0
+height = 6.0
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_gpdus"]
+rough = true
+bounce = 0.38
+
+[node name="Pen" type="Node3D"]
+script = ExtResource("1_d1mvv")
+
+[node name="Body" type="RigidBody3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mass = 0.5
+physics_material_override = SubResource("PhysicsMaterial_6e33b")
+gravity_scale = 5.0
+linear_damp = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Body"]
+mesh = SubResource("CapsuleMesh_u64jm")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body"]
+shape = SubResource("CapsuleShape3D_gxcr5")
+
+[node name="Top" type="RigidBody3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 10, 0, 0)
+mass = 0.5
+physics_material_override = SubResource("PhysicsMaterial_cto0j")
+gravity_scale = 5.0
+angular_damp = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Top"]
+mesh = SubResource("CapsuleMesh_xi0d4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Top"]
+shape = SubResource("CapsuleShape3D_gxcr5")
+
+[node name="Bottom" type="RigidBody3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -10, 0, 0)
+mass = 0.5
+physics_material_override = SubResource("PhysicsMaterial_gpdus")
+gravity_scale = 5.0
+angular_damp = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Bottom"]
+mesh = SubResource("CapsuleMesh_xi0d4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bottom"]
+shape = SubResource("CapsuleShape3D_gxcr5")
+
+[node name="Bottom_n_Body_joint" type="Generic6DOFJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.97554, 0, 0)
+node_a = NodePath("../Body")
+node_b = NodePath("../Bottom")
+
+[node name="Top_n_Body_joint" type="Generic6DOFJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.9746, 0, 0)
+node_a = NodePath("../Top")
+node_b = NodePath("../Body")
