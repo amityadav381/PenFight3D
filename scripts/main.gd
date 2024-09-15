@@ -34,12 +34,8 @@ func _input(event)->void:
 		#print("PLAYERVIEW")
 	elif Input.is_action_just_pressed("camera_view_4"):
 		$OpponentViewCamera.current = true
-	elif Input.is_action_just_pressed("reset_game"):
+	elif Input.is_action_just_pressed("reset_game"): #button in num5
 		reset_game()
-	#elif Input.is_action_just_pressed("reset_game"):
-		#print("RESET FLAG HAS BEEN SET")
-		#reset_game()
-		#reset_the_game = true
 		
 	if event.is_action_pressed("pointer_anchor"):
 		# Mouse button just pressed
@@ -95,18 +91,10 @@ func _process(_delta)->void:
 
 func _ready()->void:
 	$Hitter.hide()
+	#Connect signal from PlayerViewCamera node
+	#$PlayerViewCamera.connect("loadingCameraAnimationDone",_on_player_view_camera_loading_camera_animation_done)
 	reset_game()
-	#$PlayerPen.instantiate()	
-	#PlayerPen.initialize(Vector3(-100, 11, 0), Vector3(0, PI/2, 0), Color.RED)
-	#add_child(PlayerPen)
-	#PlayerPen.set_unique_material(PlayerPen, Color.RED)
-	#print("player color in main scene = ", PlayerPen.get_node("MeshInstance3D").mesh.material.albedo_color)
-	
-	#$OpponentPen.instantiate()	
-	#OpponentPen.initialize(Vector3(100, 11, 0), Vector3(0, PI/2, 0), Color.BLUE)
-	#add_child(OpponentPen)
-	#OpponentPen.set_unique_material(PlayerPen, Color.BLUE)
-	#print("opponent color in main scene = ", OpponentPen.get_node("MeshInstance3D").mesh.material.albedo_color)
+
 
 func update_raycastresult(mouse_pos:Vector2)->void:
 	var from := TopCamera.project_ray_origin(mouse_pos)
@@ -126,6 +114,7 @@ func reset_game()->void:
 		remove_child($PlayerPen)
 		remove_child($OpponentPen)
 	
+	$PlayerViewCamera.current = true
 	PlayerPen = PPen.instantiate()
 	OpponentPen = OPen.instantiate()
 	add_child(PlayerPen)
@@ -137,27 +126,8 @@ func reset_game()->void:
 	$PlayerPen.instantiate_(Color.DARK_RED, Vector3(-20, 30, 0), Vector3(0, PI/2, 0))
 	$OpponentPen.instantiate_(Color.BLUE, Vector3(20, 30, 0), Vector3(0, PI/2, 0))
 	print("GAME RESET COMPLETED")
-	#$PlayerPen.queue_free()
-	#$OpponentPen.queue_free()
-	#add_child(PlayerPen.instantiate())
-	#add_child(OpponentPen.instantiate())
-	#$PlayerPen/Body.set_axis_velocity(Vector3.ZERO)
-	#$OpponentPen/Body.set_axis_velocity(Vector3.ZERO)
-	#$PlayerPen.instantiate(Color.DARK_RED, Vector3(-20, 30, 0), Vector3(0, PI/2, 0))
-	#$OpponentPen.instantiate(Color.BLUE, Vector3(20, 30, 0), Vector3(0, -PI/2, 0))
-	#PlayerPen.linear_vilocity = Vector3.ZERO
-	#PlayerPen.angular_vilocity = Vector3.ZERO
-	#PlayerPen.initialize(Vector3(-100, 11, 0), Vector3(0, PI/2, 0), Color.RED)
-	#OpponentPen.initialize(Vector3(100, 11, 0), Vector3(0, PI/2, 0), Color.BLUE)
 
-#func _integrated_forces(state)->void:
-		#if reset_the_game:
-			#print("GAME RESET REACHED INTEGRATEFORCES")
-			#for child in get_children():
-				#if child is RigidBody3D:
-					#print("GAME RESET FINALLY")
-					#var child_state = child.get_physics_state()
-					#child_state.set_linear_vilocity(Vector3.ZERO)
-					#child_state.set_angular_vilocity(Vector3.ZERO)
-					#reset_the_game = false
-						
+
+func _on_player_view_camera_loading_camera_animation_done():
+	print("camera_loading_camera_animation_done")
+	$TopCamera.current = true

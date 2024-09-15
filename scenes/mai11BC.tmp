@@ -1,9 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://btup0vbh2kcb"]
+[gd_scene load_steps=11 format=3 uid="uid://btup0vbh2kcb"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_7ljo0"]
 [ext_resource type="PackedScene" uid="uid://ruywunlp6wqx" path="res://scenes/hitter.tscn" id="2_3cwgs"]
 [ext_resource type="Script" path="res://scripts/TopCamera.gd" id="2_73lrt"]
-[ext_resource type="Script" path="res://scripts/PlayerViewCamera.gd" id="3_smoix"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ucqhm"]
 
@@ -79,7 +78,6 @@ size = 100.0
 [node name="PlayerViewCamera" type="Camera3D" parent="."]
 transform = Transform3D(0.586737, 0.23168, -0.775928, 0.0478462, 0.946606, 0.318822, 0.808363, -0.22419, 0.544324, -159.672, 39.7062, 63.4457)
 size = 100.0
-script = ExtResource("3_smoix")
 
 [node name="OpponentViewCamera" type="Camera3D" parent="."]
 transform = Transform3D(0.519558, -0.296195, 0.801454, 0.0478462, 0.946606, 0.318822, -0.853094, -0.1273, 0.505989, 153.307, 30.9966, 76.8271)
@@ -87,5 +85,3 @@ size = 100.0
 
 [node name="Hitter" parent="." instance=ExtResource("2_3cwgs")]
 transform = Transform3D(2.51871, 0, 0, 0, 21.0442, 0, 0, 0, 5.45199, 0, 6, -0.0702267)
-
-[connection signal="loadingCameraAnimationDone" from="PlayerViewCamera" to="." method="_on_player_view_camera_loading_camera_animation_done"]
