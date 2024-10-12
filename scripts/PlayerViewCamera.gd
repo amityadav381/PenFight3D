@@ -1,19 +1,19 @@
 extends Camera3D
 signal loadingCameraAnimationDone
-var tween: Tween
+#var tween: Tween
 
-const INIT_CAM_POS: Vector3           = Vector3(-159.0, 38.0, 63.0)
-const RESET_ANIME_END_CAM_POS:Vector3 = Vector3(159.0, 38.0, 63.0)
-const TOP_CAM_POS:Vector3             = Vector3(1.0, 50.0, 1.0) # Real pos is (0,100,0) but bcz of cam type a diff value made sense.
-const TOP_CAM_ROT:Vector3             = Vector3(-90.0, 0.0, 0.0)
-const LOOK_AT_RESET_ANIM:Vector3      = Vector3(0,3,0)
-
-
-
-const TWOD_TOP_RIGHT_CAM_POS: Vector3    = Vector3(159.0, 38.0, -63.0)
-const TWOD_TOP_LEFT_CAM_POS: Vector3     = Vector3(-159.0, 38.0, -63.0)
-const TWOD_BOTTOM_RIGHT_CAM_POS: Vector3 = Vector3(159.0, 38.0, 63.0)
-const TWOD_BOTTOM_LEFT_CAM_POS: Vector3  = Vector3(-159.0, 38.0, 63.0)
+#const INIT_CAM_POS: Vector3           = Vector3(-159.0, 38.0, 63.0)
+#const RESET_ANIME_END_CAM_POS:Vector3 = Vector3(159.0, 38.0, 63.0)
+#const TOP_CAM_POS:Vector3             = Vector3(1.0, 50.0, 1.0) # Real pos is (0,100,0) but bcz of cam type a diff value made sense.
+#const TOP_CAM_ROT:Vector3             = Vector3(-90.0, 0.0, 0.0)
+#const LOOK_AT_RESET_ANIM:Vector3      = Vector3(0,3,0)
+#
+#
+#
+#const TWOD_TOP_RIGHT_CAM_POS: Vector3    = Vector3(159.0, 38.0, -63.0)
+#const TWOD_TOP_LEFT_CAM_POS: Vector3     = Vector3(-159.0, 38.0, -63.0)
+#const TWOD_BOTTOM_RIGHT_CAM_POS: Vector3 = Vector3(159.0, 38.0, 63.0)
+#const TWOD_BOTTOM_LEFT_CAM_POS: Vector3  = Vector3(-159.0, 38.0, 63.0)
 
 
 var look_at_pos:Vector3                  = Vector3.ZERO
