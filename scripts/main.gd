@@ -12,10 +12,11 @@ var active_player:=WHOSE_PLAYING.PLAYER_ONE
 var passive_player:= WHOSE_PLAYING.PLAYER_TWO
 
 
-const RADIAL_CAM_DIST:int             = 150
-const CAM_HEIGHT:int                  = 40
+
 enum WHOSE_PLAYING {PLAYER_ONE, PLAYER_TWO}
 
+const RADIAL_CAM_DIST:int             = 150
+const CAM_HEIGHT:int                  = 40
 const INIT_CAM_POS: Vector3           = Vector3(-159.0, 38.0, 63.0)
 const RESET_ANIME_END_CAM_POS:Vector3 = Vector3(159.0, 38.0, 63.0)
 const TOP_CAM_POS:Vector3             = Vector3(1.0, 50.0, 1.0) # Real pos is (0,100,0) but bcz of cam type a diff value made sense.
@@ -69,40 +70,19 @@ func _input(event)->void:
 				print("SHOW ARROW")
 				dragging = true
 				$Hitter.show()
-	elif event.is_action_released("pointer_anchor"):
+	elif event.is_action_released("pointer_anchor") and (active_player == WHOSE_PLAYING.PLAYER_ONE):
 		# Mouse button released
 		dragging = false
 		power = 0.0;
-		#length_vector = Vector3(100,0,0)
-		print("HIDE ARROW and SHOOOOT!!! = ",length_vector)
 		$Hitter.hide()
-		#PlayerOne.apply_central_impulse(length_vector)
 		length_vector.y = 0
-		print("IMPULSE = ",length_vector)
-		print("POSITION =", initial_click_position)
-		print("IMPULSE OBJECT = ",ImpulseOnObject)
-		#$PlayerOne.apply_central_impulse(length_vector*0.2, initial_click_position - $PlayerOne.position)
 		if ImpulseOnObject != null:
 			#before I hit the pen, let me save its location
 			#var look_At_local:Vector3
 			var pen_position_local := ImpulseOnObject.position 
 			pen_position_local.y    = CAM_HEIGHT
 			if ImpulseOnObject == $PlayerOne/Top:
-				ImpulseOnObject.apply_central_impulse(length_vector*2)
-				print("Hit vector angle = ",rad_to_deg(Vector3(1,0,0).angle_to(length_vector.normalized())))
-				print("Hit vector angle = ",length_vector.normalized())
-				await get_tree().create_timer(1.5).timeout
-				if length_vector.normalized().x <= 0:
-					if length_vector.normalized().z <= 0:
-						$PlayerViewCamera.position = TWOD_TOP_LEFT_CAM_POS
-					else:
-						$PlayerViewCamera.position = TWOD_BOTTOM_LEFT_CAM_POS
-				else:
-					if length_vector.normalized().z <= 0:
-						$PlayerViewCamera.position = TWOD_TOP_RIGHT_CAM_POS
-					else:
-						$PlayerViewCamera.position = TWOD_BOTTOM_RIGHT_CAM_POS
-				reset_cam_animation(false)
+				hit_then_begin_cam_anim(length_vector)
 		length_vector = Vector3.ZERO
 
 
@@ -117,7 +97,7 @@ func _process(_delta)->void:
 					power = $Hitter.position.distance_to(raycast_result.position) - 16
 				else:
 					power = MAX_POWER
-				var diff_vector:Vector3 = raycast_result.position - $Hitter.position			
+				var diff_vector:Vector3 = raycast_result.position - $Hitter.position
 				#print("RAY CAST POINT @",raycast_result.position)
 				#print("RAY CAST RADIOUS = ", $Hitter.position.distance_to(raycast_result.position))
 				#print("THE FORCE VECTOR = ", ($Hitter.position - raycast_result.position))
@@ -176,9 +156,12 @@ func playercam_animation_done()->void:
 	cam_animation_ongoing = false
 	$PlayerViewCamera.clear_current()
 	$TopCamera.make_current()
+	
+func switch_active_pen()->void:
 	if active_player == WHOSE_PLAYING.PLAYER_ONE:
 		active_player = WHOSE_PLAYING.PLAYER_TWO
 		passive_player = WHOSE_PLAYING.PLAYER_ONE
+		ai_pen_turn()
 	else:
 		active_player = WHOSE_PLAYING.PLAYER_ONE
 		passive_player = WHOSE_PLAYING.PLAYER_TWO
@@ -191,6 +174,7 @@ func reset_cam_animation(reset:bool)->void:
 	if reset == false:
 		await get_tree().create_timer(3.5).timeout
 		playercam_animation_done()
+		switch_active_pen()
 	else:
 		if reset_tween:
 			reset_tween.kill()
@@ -199,3 +183,28 @@ func reset_cam_animation(reset:bool)->void:
 		reset_tween.tween_property($PlayerViewCamera, "position", TOP_CAM_POS, 3)
 		reset_tween.tween_callback(playercam_animation_done)
 		print("reset_cam_animation completed")
+
+func ai_pen_turn()->void:
+	var length_vector_:Vector3
+	length_vector_   = $PlayerOne/Body.position - $PlayerTwo/Body.position
+	length_vector_.y = 0
+	hit_then_begin_cam_anim(length_vector_)
+	
+func hit_then_begin_cam_anim(impulse_:Vector3)->void:
+	if active_player == WHOSE_PLAYING.PLAYER_ONE:
+		$PlayerOne/Top.apply_central_impulse(impulse_*2)
+	elif active_player == WHOSE_PLAYING.PLAYER_TWO:
+		$PlayerTwo/Top.apply_central_impulse(impulse_*2)
+		
+	await get_tree().create_timer(1.5).timeout
+	if impulse_.normalized().x <= 0:
+		if impulse_.normalized().z <= 0:
+			$PlayerViewCamera.position = TWOD_TOP_LEFT_CAM_POS
+		else:
+			$PlayerViewCamera.position = TWOD_BOTTOM_LEFT_CAM_POS
+	else:
+		if impulse_.normalized().z <= 0:
+			$PlayerViewCamera.position = TWOD_TOP_RIGHT_CAM_POS
+		else:
+			$PlayerViewCamera.position = TWOD_BOTTOM_RIGHT_CAM_POS
+	reset_cam_animation(false)
