@@ -11,12 +11,18 @@ var power: float = 0.0
 const MAX_POWER = 100
 var ImpulseOnObject: RigidBody3D
 var reset_the_game: bool
+enum WHOSE_PLAYING {PLAYER_ONE, PLAYER_TWO}
+var active_player:=WHOSE_PLAYING.PLAYER_ONE
+var passive_player:= WHOSE_PLAYING.PLAYER_TWO
 
 var PPen:PackedScene = preload("res://scenes/pen.tscn")
 var OPen:PackedScene = preload("res://scenes/pen.tscn")
 
-var PlayerPen:Node3D
-var OpponentPen:Node3D
+const RADIAL_CAM_DIST:int             = 150
+const CAM_HEIGHT:int                  = 40
+
+var PlayerOne:Node3D
+var PlayerTwo:Node3D
 
 @onready var TopCamera: Camera3D = $TopCamera
 
@@ -32,8 +38,6 @@ func _input(event)->void:
 	elif Input.is_action_just_pressed("camera_view_3"):
 		$PlayerViewCamera.current = true
 		#print("PLAYERVIEW")
-	elif Input.is_action_just_pressed("camera_view_4"):
-		$OpponentViewCamera.current = true
 	elif Input.is_action_just_pressed("reset_game"): #button in num5
 		reset_game()
 		
@@ -43,7 +47,7 @@ func _input(event)->void:
 		print(raycast_result)
 		if raycast_result and (raycast_result.collider is RigidBody3D):
 			ImpulseOnObject = raycast_result.collider
-			if (ImpulseOnObject == $PlayerPen/Top) or (ImpulseOnObject == $OpponentPen/Top):
+			if (ImpulseOnObject == $PlayerOne/Top) or (ImpulseOnObject == $PlayerTwo/Top):
 				#print("YES YOU'RE TOUCHING THE PLAYER PEN")
 				$Hitter.position = raycast_result.position
 				initial_click_position = $Hitter.position
@@ -57,15 +61,29 @@ func _input(event)->void:
 		#length_vector = Vector3(100,0,0)
 		print("HIDE ARROW and SHOOOOT!!! = ",length_vector)
 		$Hitter.hide()
-		#PlayerPen.apply_central_impulse(length_vector)
+		#PlayerOne.apply_central_impulse(length_vector)
 		length_vector.y = 0
 		print("IMPULSE = ",length_vector)
 		print("POSITION =", initial_click_position)
 		print("IMPULSE OBJECT = ",ImpulseOnObject)
-		#$PlayerPen.apply_central_impulse(length_vector*0.2, initial_click_position - $PlayerPen.position)
+		#$PlayerOne.apply_central_impulse(length_vector*0.2, initial_click_position - $PlayerOne.position)
 		if ImpulseOnObject != null:
-			ImpulseOnObject.apply_central_impulse(length_vector*2)
+			#before I hit the pen, let me save its location
+			#var look_At_local:Vector3
+			var pen_position_local := ImpulseOnObject.position 
+			pen_position_local.y    = CAM_HEIGHT
+			if ImpulseOnObject == $PlayerOne/Top:
+				#look_At_local  =  $PlayerTwo/Top.position - ImpulseOnObject.position
+				ImpulseOnObject.apply_central_impulse(length_vector*2)
+				await get_tree().create_timer(1.5).timeout
+				$PlayerViewCamera.animate_camera(passive_player,false)
+			else:
+				#look_At_local  =  $PlayerOne/Top.position - ImpulseOnObject.position
+				ImpulseOnObject.apply_central_impulse(length_vector*2)
+				await get_tree().create_timer(1.5).timeout
+				$PlayerViewCamera.animate_camera(passive_player,false)
 		length_vector = Vector3.ZERO
+
 
 func _process(_delta)->void:
 	if dragging:
@@ -88,11 +106,13 @@ func _process(_delta)->void:
 				#$Hitter.rotation = ($Hitter.position - raycast_result.position).normalized()
 		#length_vector = get_global_mouse_position() - initial_click_position
 		#print("POWER LEVEL =", power)
+	else:
+		print("POSITION OF PEN 1 = ",$PlayerOne/Body.position)
+		print("POSITION OF PEN 2 = ",$PlayerTwo/Body.position)
 
 func _ready()->void:
 	$Hitter.hide()
 	#Connect signal from PlayerViewCamera node
-	#$PlayerViewCamera.connect("loadingCameraAnimationDone",_on_player_view_camera_loading_camera_animation_done)
 	reset_game()
 
 
@@ -107,27 +127,36 @@ func update_raycastresult(mouse_pos:Vector2)->void:
 
 func reset_game()->void:
 	print("GAME RESET STARTED")
-	if has_node("PlayerPen"):
-		#print("deleting pen nodes = ",get_node("PlayerPen"))
-		$PlayerPen.queue_free()
-		$OpponentPen.queue_free()
-		remove_child($PlayerPen)
-		remove_child($OpponentPen)
+	active_player = WHOSE_PLAYING.PLAYER_ONE
+	$TopCamera.clear_current()
+	if has_node("PlayerOne"):
+		#print("deleting pen nodes = ",get_node("PlayerOne"))
+		$PlayerOne.queue_free()
+		$PlayerTwo.queue_free()
+		remove_child($PlayerOne)
+		remove_child($PlayerTwo)
 	
-	$PlayerViewCamera.current = true
-	PlayerPen = PPen.instantiate()
-	OpponentPen = OPen.instantiate()
-	add_child(PlayerPen)
-	add_child(OpponentPen)
-	#print("PlayerPen = ", PlayerPen)
-	PlayerPen.set_name("PlayerPen")
-	OpponentPen.set_name("OpponentPen")
-	#print("PlayerPen = ", PlayerPen)
-	$PlayerPen.instantiate_(Color.DARK_RED, Vector3(-20, 30, 0), Vector3(0, PI/2, 0))
-	$OpponentPen.instantiate_(Color.BLUE, Vector3(20, 30, 0), Vector3(0, PI/2, 0))
+	$PlayerViewCamera.make_current()
+	PlayerOne = PPen.instantiate()
+	PlayerTwo = OPen.instantiate()
+	add_child(PlayerOne)
+	add_child(PlayerTwo)
+	#print("PlayerOne = ", PlayerOne)
+	PlayerOne.set_name("PlayerOne")
+	PlayerTwo.set_name("PlayerTwo")
+	#print("PlayerOne = ", PlayerOne)
+	$PlayerOne.instantiate_(Color.DARK_RED, Vector3(-20, 30, 0), Vector3(0, PI/2, 0))
+	$PlayerTwo.instantiate_(Color.BLUE, Vector3(20, 30, 0), Vector3(0, PI/2, 0))
 	print("GAME RESET COMPLETED")
 
 
 func _on_player_view_camera_loading_camera_animation_done():
 	print("camera_loading_camera_animation_done")
-	$TopCamera.current = true
+	$PlayerViewCamera.clear_current()
+	if active_player == WHOSE_PLAYING.PLAYER_ONE:
+		active_player = WHOSE_PLAYING.PLAYER_TWO
+		passive_player = WHOSE_PLAYING.PLAYER_ONE
+	else:
+		active_player = WHOSE_PLAYING.PLAYER_ONE
+		passive_player = WHOSE_PLAYING.PLAYER_TWO
+	$TopCamera.make_current()
