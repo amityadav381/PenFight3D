@@ -26,7 +26,7 @@ height = 6.0
 rough = true
 bounce = 0.38
 
-[node name="Pen" type="Node3D"]
+[node name="Pen" type="Node3D" groups=["_PEN_"]]
 script = ExtResource("1_d1mvv")
 
 [node name="Body" type="RigidBody3D" parent="."]
