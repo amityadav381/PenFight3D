@@ -43,10 +43,18 @@ script = ExtResource("1_d1mvv")
 
 [node name="Body" type="RigidBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-mass = 0.5
+mass = 0.6
 physics_material_override = SubResource("PhysicsMaterial_6e33b")
 gravity_scale = 5.0
 linear_damp = 1.0
+
+[node name="Label3D" type="Label3D" parent="Body"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -0.000337449, -18, 0)
+billboard = 1
+text = "Pen Power"
+font_size = 700
+outline_size = 100
+uppercase = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Body"]
 mesh = SubResource("CylinderMesh_yotrp")
@@ -56,7 +64,7 @@ shape = SubResource("ConvexPolygonShape3D_vlfja")
 
 [node name="Top" type="RigidBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 10, 0, 0)
-mass = 0.5
+mass = 0.6
 physics_material_override = SubResource("PhysicsMaterial_cto0j")
 gravity_scale = 5.0
 angular_damp = 1.0
@@ -69,7 +77,7 @@ shape = SubResource("ConvexPolygonShape3D_je0uc")
 
 [node name="Bottom" type="RigidBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -10, 0, 0)
-mass = 0.5
+mass = 0.6
 physics_material_override = SubResource("PhysicsMaterial_gpdus")
 gravity_scale = 5.0
 angular_damp = 1.0

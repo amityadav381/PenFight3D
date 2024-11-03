@@ -4,10 +4,12 @@ var dragging                     := false
 var ray_length                   := 10000
 var length_vector                := Vector3.ZERO
 var initial_click_position       := Vector3.ZERO
-var power                        := 0.0
+#var power                        := 0.0
 var reset_cam_animation_ongoing  := false
 var action_cam_animation_ongoing := false
 var shoot_pen                    := false
+var points:Array
+var lines:Array
 
 
 var active_player:=WHOSE_PLAYING.PLAYER_ONE
@@ -30,7 +32,7 @@ const TWOD_TOP_LEFT_CAM_POS: Vector3     = Vector3(-159.0, 38.0, -63.0)
 const TWOD_BOTTOM_RIGHT_CAM_POS: Vector3 = Vector3(159.0, 38.0, 63.0)
 const TWOD_BOTTOM_LEFT_CAM_POS: Vector3  = Vector3(-159.0, 38.0, 63.0)
 
-const MAX_POWER                         := 100
+const MAX_POWER                         := 250
 const TOP_CAM_INIT_SIZE                 := 180
 
 
@@ -76,7 +78,7 @@ func _input(event)->void:
 	elif event.is_action_released("pointer_anchor") and (active_player == WHOSE_PLAYING.PLAYER_ONE):
 		# Mouse button released
 		dragging = false
-		power = 0.0;
+		#power = 0.0;
 		$Hitter.hide()
 		length_vector.y = 0
 		if ImpulseOnObject != null:
@@ -97,13 +99,14 @@ func _process(_delta)->void:
 		raycast_result.position.y = 5
 		if raycast_result:
 			if $Hitter.position.distance_to(raycast_result.position) > 16.2:
-				if power <= MAX_POWER:
-					power = $Hitter.position.distance_to(raycast_result.position) - 16
-				else:
-					power = MAX_POWER
 				var diff_vector:Vector3 = raycast_result.position - $Hitter.position
 				var look_at_this:Vector3 = $Hitter.position - diff_vector
-				length_vector = - diff_vector
+				length_vector = - diff_vector*4
+				if length_vector.length()/MAX_POWER <= 1:
+					$PlayerOne/Body/Label3D.text = str(int((length_vector.length()/MAX_POWER)*100))
+				else:
+					$PlayerOne/Body/Label3D.text = str(100)
+					length_vector = length_vector.normalized()*MAX_POWER
 				$Hitter.look_at(look_at_this,Vector3(0,1,0))
 
 	if reset_cam_animation_ongoing:
@@ -167,13 +170,13 @@ func reset_cam_animation(reset:bool)->void:
 			action_tween.kill()
 		action_tween = get_tree().create_tween().bind_node($TopCamera)
 		action_tween.set_parallel()
-		action_tween.tween_property($TopCamera, "size", 90, 3).from(TOP_CAM_INIT_SIZE)
+		action_tween.tween_property($TopCamera, "size", 90, 2).from(TOP_CAM_INIT_SIZE)
 		if active_player == WHOSE_PLAYING.PLAYER_ONE:
-			action_tween.tween_property($TopCamera, "position:x", $PlayerTwo/Body.global_position.x, 1)
-			action_tween.tween_property($TopCamera, "position:z", $PlayerTwo/Body.global_position.z, 1)
+			action_tween.tween_property($TopCamera, "position:x", $PlayerTwo/Body.global_position.x, 0.5)
+			action_tween.tween_property($TopCamera, "position:z", $PlayerTwo/Body.global_position.z, 0.5)
 		elif active_player == WHOSE_PLAYING.PLAYER_TWO:
-			action_tween.tween_property($TopCamera, "position:x", $PlayerOne/Body.global_position.x, 1)
-			action_tween.tween_property($TopCamera, "position:z", $PlayerOne/Body.global_position.z, 1)
+			action_tween.tween_property($TopCamera, "position:x", $PlayerOne/Body.global_position.x, 0.5)
+			action_tween.tween_property($TopCamera, "position:z", $PlayerOne/Body.global_position.z, 0.5)
 		action_tween.chain().tween_callback(playercam_animation_done.bind(reset))
 	else:
 		reset_cam_animation_ongoing = true
@@ -184,23 +187,69 @@ func reset_cam_animation(reset:bool)->void:
 			reset_tween.kill()
 		reset_tween = get_tree().create_tween().bind_node($PlayerViewCamera)
 		reset_tween.tween_property($PlayerViewCamera, "position", RESET_ANIME_END_CAM_POS, 4).from(INIT_CAM_POS)
-		reset_tween.tween_property($PlayerViewCamera, "position", TOP_CAM_POS, 3)
+		#reset_tween.tween_property($PlayerViewCamera, "position", TOP_CAM_POS, 3)
 		reset_tween.tween_callback(playercam_animation_done.bind(reset))
 		#print("reset_cam_animation completed")
 
+
+func _draw_point_and_line(point:Vector3)->void:
+	var mouse_pos = point
+	if mouse_pos != null:
+		var mouse_pos_V3:Vector3 = mouse_pos
+		points.append(await Draw3d.point(mouse_pos_V3,0.05))
+		
+		#If there are at least 2 points...
+		if points.size() > 1:
+			#Draw a line from the position of the last point placed to the position of the second to last point placed
+			var point1 = points[points.size()-1]
+			var point2 = points[points.size()-2]
+			var line = await Draw3d.line(point1.position, point2.position)
+			lines.append(line)
+
+
 func ai_pen_turn()->void:
-	await get_tree().create_timer(1).timeout
+	await get_tree().create_timer(0.5).timeout
 	var length_vector_:Vector3
-	length_vector_   = $PlayerOne/Top.global_position - $PlayerTwo/Top.global_position
+	
+	
+	
+	##AI pen fighting loogic
+	var space_state = get_world_3d().direct_space_state
+	var origin      = $PlayerTwo/Top.global_position
+	var end         = $PlayerTwo/Top.global_position + ($PlayerOne/Body.global_position - $PlayerTwo/Top.global_position)*400
+	var query       = PhysicsRayQueryParameters3D.create(origin, end)
+	query.collide_with_areas = true
+	query.exclude   = [$PlayerOne/Top, $PlayerOne/Body, $PlayerOne/Bottom, $PlayerTwo/Top, $PlayerTwo/Body, $PlayerTwo/Bottom]
+	var result      = space_state.intersect_ray(query)
+	print("RAYCAST COLLISION REPORT = ",result)
+	_draw_point_and_line(origin)
+	_draw_point_and_line(result.position)
+	await get_tree().create_timer(2).timeout
+	_clear_points_and_lines()
+	
+		
+	length_vector_   = result.position - origin
 	length_vector_.y = 0
 	#shoot_pen = true
-	hit_then_begin_cam_anim(length_vector_)
+	hit_then_begin_cam_anim(length_vector_*2.2)
+
+func _clear_points_and_lines()->void:
+	for p in points:
+		p.queue_free()
+	points.clear()
+		
+	for l in lines:
+		l.queue_free()
+	lines.clear()
+
 	
 func hit_then_begin_cam_anim(impulse_:Vector3)->void:
+	if impulse_.length() >= MAX_POWER:
+		impulse_ = impulse_.normalized()*MAX_POWER
 	if active_player == WHOSE_PLAYING.PLAYER_ONE:
-		$PlayerOne/Top.apply_central_impulse(impulse_*2)
+		$PlayerOne/Top.apply_central_impulse(impulse_)
 	elif active_player == WHOSE_PLAYING.PLAYER_TWO:
-		$PlayerTwo/Top.apply_central_impulse(impulse_*2)
+		$PlayerTwo/Top.apply_central_impulse(impulse_)
 	#print("HIT VECTOR = ",impulse_)
 	#shoot_pen = false		
 	await get_tree().create_timer(1.5).timeout
