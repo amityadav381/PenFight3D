@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://btup0vbh2kcb"]
+[gd_scene load_steps=16 format=3 uid="uid://btup0vbh2kcb"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_7ljo0"]
 [ext_resource type="PackedScene" uid="uid://ruywunlp6wqx" path="res://scenes/hitter.tscn" id="2_3cwgs"]
 [ext_resource type="PackedScene" uid="uid://b8arxaa6u4qve" path="res://scenes/pen.tscn" id="4_o8d7k"]
+[ext_resource type="AudioStream" uid="uid://bjybhrcqeuoxn" path="res://assets/bg_music/Push-Long-Version(chosic.com).mp3" id="4_t5qqm"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_s7b8c"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -30,21 +31,22 @@ albedo_color = Color(0.283075, 0.353979, 0.414485, 1)
 material = SubResource("StandardMaterial3D_gt2gm")
 size = Vector3(260, 10, 100)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_vqb3i"]
-size = Vector3(947.769, 10, 340.416)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_05ica"]
-albedo_color = Color(0.16972, 0.218913, 0.262577, 1)
+albedo_color = Color(0.118093, 0.156411, 0.19041, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_l0nhr"]
 material = SubResource("StandardMaterial3D_05ica")
-size = Vector3(946.862, 10, 341.882)
+size = Vector3(2000, 10, 2000)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_shf23"]
+data = PackedVector3Array(-1000, 5, 1000, 1000, 5, 1000, -1000, -5, 1000, 1000, 5, 1000, 1000, -5, 1000, -1000, -5, 1000, 1000, 5, -1000, -1000, 5, -1000, 1000, -5, -1000, -1000, 5, -1000, -1000, -5, -1000, 1000, -5, -1000, 1000, 5, 1000, 1000, 5, -1000, 1000, -5, 1000, 1000, 5, -1000, 1000, -5, -1000, 1000, -5, 1000, -1000, 5, -1000, -1000, 5, 1000, -1000, -5, -1000, -1000, 5, 1000, -1000, -5, 1000, -1000, -5, -1000, 1000, 5, 1000, -1000, 5, 1000, 1000, 5, -1000, -1000, 5, 1000, -1000, 5, -1000, 1000, 5, -1000, -1000, -5, 1000, 1000, -5, 1000, -1000, -5, -1000, 1000, -5, 1000, 1000, -5, -1000, -1000, -5, -1000)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vi8qo"]
-size = Vector3(947.769, 10, 340.416)
+size = Vector3(2000, 10, 2000)
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_7ljo0")
+main_menu_scene = "res://scenes/main_menu.tscn"
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 55, 0)
@@ -76,13 +78,14 @@ mesh = SubResource("BoxMesh_mwlsb")
 [node name="SchoolFloor" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -36, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SchoolFloor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.215939, 0, 0.824863)
-shape = SubResource("BoxShape3D_vqb3i")
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SchoolFloor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.48098, 0, 0)
 mesh = SubResource("BoxMesh_l0nhr")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="SchoolFloor/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SchoolFloor/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_shf23")
 
 [node name="Area3D" type="Area3D" parent="SchoolFloor"]
 
@@ -117,5 +120,26 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 40, 30
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -61.1568)
 depth = 50.0
 polygon = PackedVector2Array(-171.559, 115.113, -171.305, -8.1906, 166.831, -8.01292, 168.888, 137.138, -171.132, 138.586, -171.857, 116.86, 132.251, 114.027, 131.164, 7.20497, -132.813, 8.2913, -133.899, 115.476)
+
+[node name="Game_background_music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_t5qqm")
+
+[node name="PlayerScore" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.268429, 94.9433, 71.6058)
+visible = false
+billboard = 1
+modulate = Color(0.852769, 0.847954, 1.54018e-06, 1)
+text = "SCORE = "
+font_size = 1500
+outline_size = 127
+
+[node name="YOULOST" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.268429, 94.9433, -7.21889)
+billboard = 1
+modulate = Color(0.685733, 8.42288e-07, 3.85046e-07, 1)
+text = "**YOU LOST!!**
+"
+font_size = 3000
+outline_size = 127
 
 [connection signal="body_entered" from="SchoolFloor/Area3D" to="." method="_on_area_3d_body_entered"]

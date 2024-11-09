@@ -1,4 +1,7 @@
 extends Node
+var global_score := 0
+var games_count  := 0
+const MAX_GAMES  := 1
 
 func line(pos1: Vector3, pos2: Vector3, color = Color.WHITE_SMOKE, persist_ms = 0):
 	var mesh_instance := MeshInstance3D.new()

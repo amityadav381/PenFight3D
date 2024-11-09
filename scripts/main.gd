@@ -4,7 +4,7 @@ var dragging                     := false
 var ray_length                   := 10000
 var length_vector                := Vector3.ZERO
 var initial_click_position       := Vector3.ZERO
-#var power                        := 0.0
+var collision_count              := 0
 var reset_cam_animation_ongoing  := false
 var action_cam_animation_ongoing := false
 var shoot_pen                    := false
@@ -34,6 +34,7 @@ const TWOD_BOTTOM_LEFT_CAM_POS: Vector3  = Vector3(-159.0, 38.0, 63.0)
 
 const MAX_POWER                         := 250
 const TOP_CAM_INIT_SIZE                 := 180
+const MAX_COLLISION                     := 1
 
 
 var PlayerOne:RigidBody3D
@@ -44,23 +45,17 @@ var ImpulseOnObject: RigidBody3D
 var reset_the_game: bool
 var raycast_result: Dictionary
 
+
+@onready var bg_sfx := $Game_background_music
+@export_file() var main_menu_scene
 #@onready var TopCamera: Camera3D = $TopCamera
 #var PPen:PackedScene = preload("res://scenes/pen.tscn")
 #var OPen:PackedScene = preload("res://scenes/pen.tscn")
 
 
 func _input(event)->void:
-	#if Input.is_action_just_pressed("camera_view_1"):
-		#$FrontCamera.current = true
-		##print("FROONTVIEW")
-	#elif Input.is_action_just_pressed("camera_view_2"):
-		##print("TOPVIEW")
-		#pass
-	#elif Input.is_action_just_pressed("camera_view_3"):
-		#$PlayerViewCamera.current = true
-		##print("PLAYERVIEW")
-	#elif Input.is_action_just_pressed("reset_game"): #button in num5
-		#reset_game()
+	if Input.is_action_just_pressed("Escape"):
+		get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 		
 	if event.is_action_pressed("pointer_anchor"):
 		# Mouse button just pressed
@@ -68,7 +63,7 @@ func _input(event)->void:
 		print(raycast_result)
 		if raycast_result and (raycast_result.collider is RigidBody3D):
 			ImpulseOnObject = raycast_result.collider
-			if (ImpulseOnObject == $PlayerOne/Top) or (ImpulseOnObject == $PlayerTwo/Top):
+			if (ImpulseOnObject == $PlayerOne/Top) or (ImpulseOnObject == $PlayerOne/Bottom):
 				#print("YES YOU'RE TOUCHING THE PLAYER PEN")
 				$Hitter.position = raycast_result.position
 				initial_click_position = $Hitter.position
@@ -86,9 +81,9 @@ func _input(event)->void:
 			#var look_At_local:Vector3
 			var pen_position_local := ImpulseOnObject.position 
 			pen_position_local.y    = CAM_HEIGHT
-			if ImpulseOnObject == $PlayerOne/Top:
+			if (ImpulseOnObject == $PlayerOne/Top) or (ImpulseOnObject == $PlayerOne/Bottom):
 				#shoot_pen = true
-				hit_then_begin_cam_anim(length_vector)
+				hit_then_begin_cam_anim(length_vector, ImpulseOnObject)
 		length_vector = Vector3.ZERO
 
 
@@ -115,9 +110,17 @@ func _process(_delta)->void:
 		elif active_player == WHOSE_PLAYING.PLAYER_TWO:
 			$PlayerViewCamera.look_at($PlayerOne/Body.position)
 
-
+	#if Draw3d.games_count == Draw3d.MAX_GAMES:
+		#if Draw3d.global_score != 3:
+			#$YOULOST.visible = true
+			#get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+			#await get_tree().create_timer(1.5).timeout
+			#get_tree().reload_current_scene()
 
 func _ready()->void:
+	#print("SFX VOLUME = ",bg_sfx.volume_db)
+	$YOULOST.visible = false
+	collision_count = 0
 	$Hitter.hide()
 	#Connect signal from PlayerViewCamera node
 	reset_game()
@@ -133,12 +136,17 @@ func update_raycastresult(mouse_pos:Vector2)->void:
 
 func reset_game()->void:
 	#print("GAME RESET STARTED")
+	$PlayerScore.text = "SCORE = " + str(Draw3d.global_score) 
 	active_player = WHOSE_PLAYING.PLAYER_ONE
+	bg_sfx.volume_db = -10
+	bg_sfx.play()
 	reset_cam_animation(true)
 	#print("GAME RESET COMPLETED")
 
 func playercam_animation_done(reset:bool)->void:
 	#print("camera_animation_done")
+	bg_sfx.volume_db = -15
+	print("SFX VOLUME = ",bg_sfx.volume_db)
 	$TopCamera.size              = TOP_CAM_INIT_SIZE
 	$TopCamera.position          = TOP_CAM_POS
 	reset_cam_animation_ongoing  = false
@@ -170,13 +178,15 @@ func reset_cam_animation(reset:bool)->void:
 			action_tween.kill()
 		action_tween = get_tree().create_tween().bind_node($TopCamera)
 		action_tween.set_parallel()
-		action_tween.tween_property($TopCamera, "size", 90, 2).from(TOP_CAM_INIT_SIZE)
+		#action_tween.tween_property($TopCamera, "size", 90, 2.5).from(TOP_CAM_INIT_SIZE)
 		if active_player == WHOSE_PLAYING.PLAYER_ONE:
-			action_tween.tween_property($TopCamera, "position:x", $PlayerTwo/Body.global_position.x, 0.5)
-			action_tween.tween_property($TopCamera, "position:z", $PlayerTwo/Body.global_position.z, 0.5)
+			pass
+			#action_tween.tween_property($TopCamera, "position:x", $PlayerTwo/Body.global_position.x, 0.5)
+			#action_tween.tween_property($TopCamera, "position:z", $PlayerTwo/Body.global_position.z, 0.5)
 		elif active_player == WHOSE_PLAYING.PLAYER_TWO:
-			action_tween.tween_property($TopCamera, "position:x", $PlayerOne/Body.global_position.x, 0.5)
-			action_tween.tween_property($TopCamera, "position:z", $PlayerOne/Body.global_position.z, 0.5)
+			pass
+			#action_tween.tween_property($TopCamera, "position:x", $PlayerOne/Body.global_position.x, 0.5)
+			#action_tween.tween_property($TopCamera, "position:z", $PlayerOne/Body.global_position.z, 0.5)
 		action_tween.chain().tween_callback(playercam_animation_done.bind(reset))
 	else:
 		reset_cam_animation_ongoing = true
@@ -210,13 +220,26 @@ func _draw_point_and_line(point:Vector3)->void:
 func ai_pen_turn()->void:
 	await get_tree().create_timer(0.5).timeout
 	var length_vector_:Vector3
+	var ImpulseOnObject_:RigidBody3D
+	var top_dist_:float = 0.0
+	var bottom_dist_:float = 0.0
 	
+	##Choosing where to hit the pen best
+	top_dist_ = ($PlayerOne/Top.global_position - $PlayerTwo/Top.global_position).length()
+	top_dist_ += ($PlayerOne/Bottom.global_position - $PlayerTwo/Top.global_position).length()
 	
+	bottom_dist_ = ($PlayerOne/Top.global_position - $PlayerTwo/Bottom.global_position).length()
+	bottom_dist_ += ($PlayerOne/Bottom.global_position - $PlayerTwo/Bottom.global_position).length()
+	
+	if top_dist_ >= bottom_dist_:
+		ImpulseOnObject_ = $PlayerTwo/Top
+	else:
+		ImpulseOnObject_ = $PlayerTwo/Bottom
 	
 	##AI pen fighting loogic
 	var space_state = get_world_3d().direct_space_state
-	var origin      = $PlayerTwo/Top.global_position
-	var end         = $PlayerTwo/Top.global_position + ($PlayerOne/Body.global_position - $PlayerTwo/Top.global_position)*400
+	var origin      = ImpulseOnObject_.global_position
+	var end         = ImpulseOnObject_.global_position + ($PlayerOne/Body.global_position - ImpulseOnObject_.global_position)*400
 	var query       = PhysicsRayQueryParameters3D.create(origin, end)
 	query.collide_with_areas = true
 	query.exclude   = [$PlayerOne/Top, $PlayerOne/Body, $PlayerOne/Bottom, $PlayerTwo/Top, $PlayerTwo/Body, $PlayerTwo/Bottom]
@@ -231,7 +254,7 @@ func ai_pen_turn()->void:
 	length_vector_   = result.position - origin
 	length_vector_.y = 0
 	#shoot_pen = true
-	hit_then_begin_cam_anim(length_vector_*2.2)
+	hit_then_begin_cam_anim(length_vector_*2.2, ImpulseOnObject_)
 
 func _clear_points_and_lines()->void:
 	for p in points:
@@ -243,13 +266,19 @@ func _clear_points_and_lines()->void:
 	lines.clear()
 
 	
-func hit_then_begin_cam_anim(impulse_:Vector3)->void:
+func hit_then_begin_cam_anim(impulse_:Vector3, ImpulseOnObject_:RigidBody3D)->void:
 	if impulse_.length() >= MAX_POWER:
 		impulse_ = impulse_.normalized()*MAX_POWER
 	if active_player == WHOSE_PLAYING.PLAYER_ONE:
-		$PlayerOne/Top.apply_central_impulse(impulse_)
+		if ImpulseOnObject_ == $PlayerOne/Top:
+			$PlayerOne/Top.apply_central_impulse(impulse_)
+		elif ImpulseOnObject_ == $PlayerOne/Bottom:
+			$PlayerOne/Bottom.apply_central_impulse(impulse_)
 	elif active_player == WHOSE_PLAYING.PLAYER_TWO:
-		$PlayerTwo/Top.apply_central_impulse(impulse_)
+		if ImpulseOnObject_ == $PlayerTwo/Top:
+			$PlayerTwo/Top.apply_central_impulse(impulse_)
+		elif ImpulseOnObject_ == $PlayerTwo/Bottom:
+			$PlayerTwo/Bottom.apply_central_impulse(impulse_)
 	#print("HIT VECTOR = ",impulse_)
 	#shoot_pen = false		
 	await get_tree().create_timer(1.5).timeout
@@ -259,11 +288,39 @@ func hit_then_begin_cam_anim(impulse_:Vector3)->void:
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	#print("BODY ENTERED body.name = ", body.name)
 	#print("BODY ENTERED root node body.name = ", body.get_parent_node_3d().name)
-	if body.get_parent_node_3d().name == "PlayerOne" or body.get_parent_node_3d().name == "PlayerTwo":
-		#print("You Lost!")
-		await get_tree().create_timer(3).timeout
-		get_tree().reload_current_scene()
-	#elif body.get_parent_node_3d().name == "PlayerTwo":
-		##print("You Won!")
-		#get_tree().reload_current_scene()
+	print("collision_count = ",collision_count)
+	if collision_count < MAX_COLLISION:
+		collision_count = MAX_COLLISION
+		if body.get_parent_node_3d().name == "PlayerOne" or body.get_parent_node_3d().name == "PlayerTwo":
+			if body.get_parent_node_3d().name == "PlayerOne":
+				#Draw3d.global_score -=1
+				#$PlayerScore.text = "SCORE = " + str(Draw3d.global_score)
+				$YOULOST.modulate = Color.DARK_RED
+				$YOULOST.text = "YOU LOST!!!"
+				$YOULOST.visible = true
+				await get_tree().create_timer(1.5).timeout
+				get_tree().change_scene_to_file(main_menu_scene)
+			elif body.get_parent_node_3d().name == "PlayerTwo":
+				Draw3d.global_score +=1
+				#$PlayerScore.text = "SCORE = " + str(Draw3d.global_score
+				$YOULOST.modulate = Color.GREEN
+				$YOULOST.text = "YOU WON!!!"
+				$YOULOST.visible = true
+				await get_tree().create_timer(1.5).timeout
+				get_tree().change_scene_to_file(main_menu_scene)
+			#Draw3d.games_count = Draw3d.games_count + 1
+			#if (Draw3d.games_count == Draw3d.MAX_GAMES) and (Draw3d.global_score != 1) :
+				#$YOULOST.modulate = Color.GREEN
+				#$YOULOST.text = "YOU WON!!!"
+				#$YOULOST.visible = true
+				#await get_tree().create_timer(1.5).timeout
+				#get_tree().change_scene_to_file(main_menu_scene)
+			#else:
+				#$YOULOST.modulate = Color.DARK_RED
+				#$YOULOST.text = "YOU LOST!!!"
+				#$YOULOST.visible = true
+				#await get_tree().create_timer(1.5).timeout
+				#get_tree().reload_current_scene()
+				#print("collision_count = ",collision_count)
+
 

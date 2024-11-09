@@ -1,6 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://b8arxaa6u4qve"]
+[gd_scene load_steps=16 format=3 uid="uid://b8arxaa6u4qve"]
 
 [ext_resource type="Script" path="res://scripts/Pen.gd" id="1_d1mvv"]
+[ext_resource type="AudioStream" uid="uid://bpggxjmq55xt4" path="res://assets/impact_audio/Audio/impactGlass_heavy_002.ogg" id="2_lai7d"]
+[ext_resource type="Shader" path="res://scenes/pen.gdshader" id="2_wpmaa"]
+[ext_resource type="AudioStream" uid="uid://denihnvrfcre3" path="res://assets/swinging-staff-whoosh-strong-08-44658.mp3" id="3_cjrxk"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6e33b"]
 rough = true
@@ -22,6 +25,16 @@ bounce = 0.38
 top_radius = 1.5
 bottom_radius = 1.5
 height = 5.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ey4fl"]
+render_priority = 0
+shader = ExtResource("2_wpmaa")
+shader_parameter/outline_color = null
+shader_parameter/outline_width = 2.0
+shader_parameter/constant_width = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mea8m"]
+next_pass = SubResource("ShaderMaterial_ey4fl")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_je0uc"]
 points = PackedVector3Array(-1.5, -2.75, -0.000293493, -1.49295, -2.75, -0.147122, -1.49295, -2.75, 0.146829, -1.5, 2.75, -0.000293493, -1.47122, -2.75, -0.292776, -1.49295, 2.75, -0.147122, -1.47122, -2.75, 0.292483, -1.49295, 2.75, 0.146829, -1.43569, -2.75, -0.435493, -1.47122, 2.75, -0.292776, -1.43569, -2.75, 0.4352, -1.47122, 2.75, 0.292483, -1.38606, -2.75, -0.574099, -1.43569, 2.75, -0.435493, -1.38606, -2.75, 0.573806, -1.43569, 2.75, 0.4352, -1.32292, -2.75, -0.707126, -1.38606, 2.75, -0.574099, -1.32292, -2.75, 0.706833, -1.38606, 2.75, 0.573806, -1.24745, -2.75, -0.833399, -1.32292, 2.75, -0.707126, -1.24745, -2.75, 0.833105, -1.32292, 2.75, 0.706833, -1.15965, -2.75, -0.951742, -1.24745, 2.75, -0.833399, -1.15965, -2.75, 0.951449, -1.24745, 2.75, 0.833105, -1.06069, -2.75, -1.06069, -1.15965, 2.75, -0.951742, -1.06069, -2.75, 1.0604, -1.15965, 2.75, 0.951449, -0.951742, -2.75, -1.15965, -1.06069, 2.75, -1.06069, -0.951742, -2.75, 1.15936, -1.06069, 2.75, 1.0604, -0.833399, -2.75, -1.24745, -0.951742, 2.75, -1.15965, -0.833399, -2.75, 1.24716, -0.951742, 2.75, 1.15936, -0.707126, -2.75, -1.32292, -0.833399, 2.75, -1.24745, -0.707126, -2.75, 1.32263, -0.833399, 2.75, 1.24716, -0.574099, -2.75, -1.38606, -0.707126, 2.75, -1.32292, -0.574099, -2.75, 1.38577, -0.707126, 2.75, 1.32263, -0.435493, -2.75, -1.43569, -0.574099, 2.75, -1.38606, -0.435493, -2.75, 1.4354, -0.574099, 2.75, 1.38577, -0.292776, -2.75, -1.47122, -0.435493, 2.75, -1.43569, -0.292776, -2.75, 1.47093, -0.435493, 2.75, 1.4354, -0.147122, -2.75, -1.49295, -0.292776, 2.75, -1.47122, -0.147122, -2.75, 1.49266, -0.292776, 2.75, 1.47093, -0.000293493, -2.75, -1.5, -0.147122, 2.75, -1.49295, -0.000293493, -2.75, 1.49971, -0.147122, 2.75, 1.49266, 0.146829, -2.75, -1.49295, -0.000293493, 2.75, -1.5, 0.146829, -2.75, 1.49266, -0.000293493, 2.75, 1.49971, 0.292483, -2.75, -1.47122, 0.146829, 2.75, -1.49295, 0.292483, -2.75, 1.47093, 0.146829, 2.75, 1.49266, 0.4352, -2.75, -1.43569, 0.292483, 2.75, -1.47122, 0.4352, -2.75, 1.4354, 0.292483, 2.75, 1.47093, 0.573806, -2.75, -1.38606, 0.4352, 2.75, -1.43569, 0.573806, -2.75, 1.38577, 0.4352, 2.75, 1.4354, 0.706833, -2.75, -1.32292, 0.573806, 2.75, -1.38606, 0.706833, -2.75, 1.32263, 0.573806, 2.75, 1.38577, 0.833105, -2.75, -1.24745, 0.706833, 2.75, -1.32292, 0.833105, -2.75, 1.24716, 0.706833, 2.75, 1.32263, 0.951449, -2.75, -1.15965, 0.833105, 2.75, -1.24745, 0.951449, -2.75, 1.15936, 0.833105, 2.75, 1.24716, 1.0604, -2.75, -1.06069, 0.951449, 2.75, -1.15965, 1.0604, -2.75, 1.0604, 0.951449, 2.75, 1.15936, 1.15936, -2.75, -0.951742, 1.0604, 2.75, -1.06069, 1.15936, -2.75, 0.951449, 1.0604, 2.75, 1.0604, 1.24716, -2.75, -0.833399, 1.15936, 2.75, -0.951742, 1.24716, -2.75, 0.833105, 1.15936, 2.75, 0.951449, 1.32263, -2.75, -0.707126, 1.24716, 2.75, -0.833399, 1.32263, -2.75, 0.706833, 1.24716, 2.75, 0.833105, 1.38577, -2.75, -0.574099, 1.32263, 2.75, -0.707126, 1.38577, -2.75, 0.573806, 1.32263, 2.75, 0.706833, 1.4354, -2.75, -0.435493, 1.38577, 2.75, -0.574099, 1.4354, -2.75, 0.4352, 1.38577, 2.75, 0.573806, 1.47093, -2.75, -0.292776, 1.4354, 2.75, -0.435493, 1.47093, -2.75, 0.292483, 1.4354, 2.75, 0.4352, 1.49266, -2.75, -0.147122, 1.47093, 2.75, -0.292776, 1.49266, -2.75, 0.146829, 1.47093, 2.75, 0.292483, 1.49971, -2.75, -0.000293493, 1.49266, 2.75, -0.147122, 1.49266, 2.75, 0.146829, 1.49971, 2.75, -0.000293493)
@@ -46,13 +59,15 @@ transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 
 mass = 0.6
 physics_material_override = SubResource("PhysicsMaterial_6e33b")
 gravity_scale = 5.0
+max_contacts_reported = 1
+contact_monitor = true
 linear_damp = 1.0
 
 [node name="Label3D" type="Label3D" parent="Body"]
-transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -0.000337449, -18, 0)
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -0.000337837, -26.8852, 0)
 billboard = 1
 text = "Pen Power"
-font_size = 700
+font_size = 1000
 outline_size = 100
 uppercase = true
 
@@ -67,10 +82,13 @@ transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 10, 0,
 mass = 0.6
 physics_material_override = SubResource("PhysicsMaterial_cto0j")
 gravity_scale = 5.0
+max_contacts_reported = 1
+contact_monitor = true
 angular_damp = 1.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Top"]
 mesh = SubResource("CylinderMesh_tg4d0")
+surface_material_override/0 = SubResource("StandardMaterial3D_mea8m")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Top"]
 shape = SubResource("ConvexPolygonShape3D_je0uc")
@@ -80,6 +98,8 @@ transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -10, 0
 mass = 0.6
 physics_material_override = SubResource("PhysicsMaterial_gpdus")
 gravity_scale = 5.0
+max_contacts_reported = 1
+contact_monitor = true
 angular_damp = 1.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Bottom"]
@@ -97,3 +117,13 @@ node_b = NodePath("../Bottom")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.9746, 0, 0)
 node_a = NodePath("../Top")
 node_b = NodePath("../Body")
+
+[node name="Impact" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_lai7d")
+
+[node name="WhopWhop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_cjrxk")
+
+[connection signal="body_entered" from="Body" to="." method="_on_body_body_entered"]
+[connection signal="body_entered" from="Top" to="." method="_on_top_body_entered"]
+[connection signal="body_entered" from="Bottom" to="." method="_on_bottom_body_entered"]
