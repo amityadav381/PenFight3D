@@ -1,6 +1,7 @@
 extends Node3D
 
 @onready var whopwhop := $WhopWhop
+var whop_to_play: bool = true
 # Called when the node enters the scene tree for the first time.
 func instantiate_(var_color:Color, var_position:Vector3, var_rotation:Vector3)->void:
 	var new_material = StandardMaterial3D.new()
@@ -8,7 +9,7 @@ func instantiate_(var_color:Color, var_position:Vector3, var_rotation:Vector3)->
 	$Top/MeshInstance3D.material_override= new_material
 	position = var_position
 	rotation = var_rotation
-	print("rotation = ",rotation, "position = ", position)
+	#print("rotation = ",rotation, "position = ", position)
 
 	
 func _ready():
@@ -33,12 +34,14 @@ func _ready():
 		#$Hook/MeshInstance3D.material_override = player2_top_material
 
 func _physics_process(_delta):
-	if $Body.angular_velocity.length() > 0:
-		whopwhop.play()
-		print("whopwhpowhopwhpowhowhpow")
-	else:
-		whopwhop.stop()
-		print("^_^_^_^_^_^_^_^_^_^_^_^_^_")
+	pass
+	#if $Body.angular_velocity.length() > 0 and whop_to_play:
+		#whop_to_play = false
+		#whopwhop.play()
+		#print("whopwhp $Body.angular_velocity.length() = ", $Body.angular_velocity.length())
+	#elif $Body.angular_velocity.length() <= 0.01:
+		##whopwhop.stop()
+		#print("^_^_^_^_^_^_^_^_^_^_^_^_^_")
 
 
 func _on_body_body_entered(body):

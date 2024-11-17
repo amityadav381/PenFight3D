@@ -60,7 +60,7 @@ func _input(event)->void:
 	if event.is_action_pressed("pointer_anchor"):
 		# Mouse button just pressed
 		update_raycastresult(get_viewport().get_mouse_position())
-		print(raycast_result)
+		print("RAY_CAST RESULT = ",raycast_result)
 		if raycast_result and (raycast_result.collider is RigidBody3D):
 			ImpulseOnObject = raycast_result.collider
 			if (ImpulseOnObject == $PlayerOne/Top) or (ImpulseOnObject == $PlayerOne/Bottom):
@@ -136,7 +136,7 @@ func update_raycastresult(mouse_pos:Vector2)->void:
 
 func reset_game()->void:
 	#print("GAME RESET STARTED")
-	$PlayerScore.text = "SCORE = " + str(Draw3d.global_score) 
+	#$PlayerScore.text = "SCORE = " + str(Draw3d.global_score) 
 	active_player = WHOSE_PLAYING.PLAYER_ONE
 	bg_sfx.volume_db = -10
 	bg_sfx.play()
@@ -244,7 +244,7 @@ func ai_pen_turn()->void:
 	query.collide_with_areas = true
 	query.exclude   = [$PlayerOne/Top, $PlayerOne/Body, $PlayerOne/Bottom, $PlayerTwo/Top, $PlayerTwo/Body, $PlayerTwo/Bottom]
 	var result      = space_state.intersect_ray(query)
-	print("RAYCAST COLLISION REPORT = ",result)
+	#print("RAYCAST COLLISION REPORT = ",result)
 	_draw_point_and_line(origin)
 	_draw_point_and_line(result.position)
 	await get_tree().create_timer(2).timeout
@@ -288,7 +288,7 @@ func hit_then_begin_cam_anim(impulse_:Vector3, ImpulseOnObject_:RigidBody3D)->vo
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	#print("BODY ENTERED body.name = ", body.name)
 	#print("BODY ENTERED root node body.name = ", body.get_parent_node_3d().name)
-	print("collision_count = ",collision_count)
+	#print("collision_count = ",collision_count)
 	if collision_count < MAX_COLLISION:
 		collision_count = MAX_COLLISION
 		if body.get_parent_node_3d().name == "PlayerOne" or body.get_parent_node_3d().name == "PlayerTwo":
@@ -322,5 +322,3 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 				#await get_tree().create_timer(1.5).timeout
 				#get_tree().reload_current_scene()
 				#print("collision_count = ",collision_count)
-
-

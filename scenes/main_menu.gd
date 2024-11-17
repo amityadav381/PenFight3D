@@ -11,4 +11,3 @@ func _on_quit_pressed():
 	sfx_quit.play()
 	await get_tree().create_timer(0.2).timeout
 	get_tree().quit()
-

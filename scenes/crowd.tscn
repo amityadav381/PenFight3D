@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://dkfppnja20st4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qy6xm"]
+albedo_color = Color(0.693382, 0.536888, 0.477858, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_u8b6o"]
+material = SubResource("StandardMaterial3D_qy6xm")
+radius = 15.0
+height = 40.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_win0f"]
+albedo_color = Color(0.195009, 0.39349, 0.81511, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_w6hi0"]
+material = SubResource("StandardMaterial3D_win0f")
+radius = 35.0
+height = 150.0
+
+[node name="Crowd" type="Node3D"]
+
+[node name="sar" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.31601, 0)
+mesh = SubResource("CapsuleMesh_u8b6o")
+
+[node name="dhad" type="MeshInstance3D" parent="sar"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -96.0183, 0)
+mesh = SubResource("CapsuleMesh_w6hi0")

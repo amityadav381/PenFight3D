@@ -1,9 +1,10 @@
-[gd_scene load_steps=16 format=3 uid="uid://btup0vbh2kcb"]
+[gd_scene load_steps=17 format=3 uid="uid://btup0vbh2kcb"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_7ljo0"]
 [ext_resource type="PackedScene" uid="uid://ruywunlp6wqx" path="res://scenes/hitter.tscn" id="2_3cwgs"]
 [ext_resource type="PackedScene" uid="uid://b8arxaa6u4qve" path="res://scenes/pen.tscn" id="4_o8d7k"]
 [ext_resource type="AudioStream" uid="uid://bjybhrcqeuoxn" path="res://assets/bg_music/Push-Long-Version(chosic.com).mp3" id="4_t5qqm"]
+[ext_resource type="PackedScene" uid="uid://dkfppnja20st4" path="res://scenes/crowd.tscn" id="5_llepm"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_s7b8c"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -98,7 +99,7 @@ transform = Transform3D(0.586737, 0.23168, -0.775928, 0.0478462, 0.946606, 0.318
 size = 100.0
 
 [node name="TopCamera" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 100, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 149, 0)
 projection = 1
 size = 180.0
 near = 0.1
@@ -135,11 +136,45 @@ outline_size = 127
 
 [node name="YOULOST" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.268429, 94.9433, -7.21889)
+visible = false
 billboard = 1
 modulate = Color(0.685733, 8.42288e-07, 3.85046e-07, 1)
 text = "**YOU LOST!!**
 "
 font_size = 3000
 outline_size = 127
+
+[node name="Crowd_TopNode" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -39, 0)
+
+[node name="Crowd" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 73, -179)
+
+[node name="Crowd2" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -176.418, 73, -131.508)
+
+[node name="Crowd3" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -97.515, 73, -96.7621)
+
+[node name="Crowd4" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 122.755, 73, -145.018)
+
+[node name="Crowd5" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 73, -130.803)
+
+[node name="Crowd6" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68.7606, 73, -89.5465)
+
+[node name="Crowd7" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -237.655, 73, -45.7898)
+
+[node name="Crowd8" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 182.528, 73, -5.2794)
+
+[node name="Crowd9" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -169.032, 73, 20.7337)
+
+[node name="Crowd10" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 168.776, 73, -77.0446)
 
 [connection signal="body_entered" from="SchoolFloor/Area3D" to="." method="_on_area_3d_body_entered"]
