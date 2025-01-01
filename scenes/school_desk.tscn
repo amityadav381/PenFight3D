@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://bqihefeqqb760"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wwd4m"]
+friction = 0.5
+bounce = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_n2ifg"]
+size = Vector3(259.998, 10, 100.006)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gt2gm"]
+albedo_color = Color(0.283075, 0.353979, 0.414485, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mwlsb"]
+material = SubResource("StandardMaterial3D_gt2gm")
+size = Vector3(260, 10, 100)
+
+[node name="SchoolDesk" type="StaticBody3D"]
+physics_material_override = SubResource("PhysicsMaterial_wwd4m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.481705, 0.00676632, 0.0034256)
+shape = SubResource("BoxShape3D_n2ifg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.48098, 0, 0)
+mesh = SubResource("BoxMesh_mwlsb")

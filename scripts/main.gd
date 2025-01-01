@@ -59,8 +59,8 @@ func _input(event)->void:
 		
 	if event.is_action_pressed("pointer_anchor"):
 		# Mouse button just pressed
-		update_raycastresult(get_viewport().get_mouse_position())
-		print("RAY_CAST RESULT = ",raycast_result)
+		#update_raycastresult(get_viewport().get_mouse_position())
+		#print("RAY_CAST RESULT = ",raycast_result)
 		if raycast_result and (raycast_result.collider is RigidBody3D):
 			ImpulseOnObject = raycast_result.collider
 			if (ImpulseOnObject == $PlayerOne/Top) or (ImpulseOnObject == $PlayerOne/Bottom):
@@ -70,11 +70,17 @@ func _input(event)->void:
 				#print("SHOW ARROW")
 				dragging = true
 				$Hitter.show()
+				if (ImpulseOnObject == $PlayerOne/Top):
+					$PlayerOne/Top/Outline.visible = true
+				elif (ImpulseOnObject == $PlayerOne/Bottom):
+					$PlayerOne/Bottom/Outline.visible = true
 	elif event.is_action_released("pointer_anchor") and (active_player == WHOSE_PLAYING.PLAYER_ONE):
 		# Mouse button released
 		dragging = false
 		#power = 0.0;
 		$Hitter.hide()
+		$PlayerOne/Top/Outline.visible = false
+		$PlayerOne/Bottom/Outline.visible = false
 		length_vector.y = 0
 		if ImpulseOnObject != null:
 			#before I hit the pen, let me save its location
@@ -88,9 +94,21 @@ func _input(event)->void:
 
 
 func _process(_delta)->void:
+	update_raycastresult(get_viewport().get_mouse_position())
+	if raycast_result and (raycast_result.collider is RigidBody3D):
+		ImpulseOnObject = raycast_result.collider
+		if (ImpulseOnObject == $PlayerOne/Top):
+			$PlayerOne/Top/Outline.visible = true
+			$PlayerOne/Bottom/Outline.visible = false
+		elif (ImpulseOnObject == $PlayerOne/Bottom):
+			$PlayerOne/Bottom/Outline.visible = true
+			$PlayerOne/Top/Outline.visible = false
+		else:
+			$PlayerOne/Bottom/Outline.visible = false
+			$PlayerOne/Top/Outline.visible = false
+			
 	if dragging:
 		# If dragging, update the sprite's rotation to point at the mouse
-		update_raycastresult(get_viewport().get_mouse_position())
 		raycast_result.position.y = 5
 		if raycast_result:
 			if $Hitter.position.distance_to(raycast_result.position) > 16.2:
@@ -179,12 +197,12 @@ func reset_cam_animation(reset:bool)->void:
 		action_tween = get_tree().create_tween().bind_node($TopCamera)
 		action_tween.set_parallel()
 		#action_tween.tween_property($TopCamera, "size", 90, 2.5).from(TOP_CAM_INIT_SIZE)
-		if active_player == WHOSE_PLAYING.PLAYER_ONE:
-			pass
+		#if active_player == WHOSE_PLAYING.PLAYER_ONE:
+			#pass
 			#action_tween.tween_property($TopCamera, "position:x", $PlayerTwo/Body.global_position.x, 0.5)
 			#action_tween.tween_property($TopCamera, "position:z", $PlayerTwo/Body.global_position.z, 0.5)
-		elif active_player == WHOSE_PLAYING.PLAYER_TWO:
-			pass
+		#elif active_player == WHOSE_PLAYING.PLAYER_TWO:
+			#pass
 			#action_tween.tween_property($TopCamera, "position:x", $PlayerOne/Body.global_position.x, 0.5)
 			#action_tween.tween_property($TopCamera, "position:z", $PlayerOne/Body.global_position.z, 0.5)
 		action_tween.chain().tween_callback(playercam_animation_done.bind(reset))

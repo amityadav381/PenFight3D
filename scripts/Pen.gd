@@ -24,11 +24,15 @@ func _ready():
 	player2_top_material.albedo_color = Color.INDIAN_RED
 	if get_name() == "PlayerOne":
 		$Top/MeshInstance3D.material_override = player1_top_material
+		$Top/Outline.visible = false
+		$Bottom/Outline.visible = false
 		$Body/Label3D.text = "You"
 		$Body/Label3D.modulate = Color.DODGER_BLUE
 		#$Hook/MeshInstance3D.material_override = player1_top_material
 	elif get_name() == "PlayerTwo":
 		$Top/MeshInstance3D.material_override = player2_top_material
+		$Top/Outline.visible = false
+		$Bottom/Outline.visible = false
 		$Body/Label3D.text = "Opponent"
 		$Body/Label3D.modulate = Color.INDIAN_RED
 		#$Hook/MeshInstance3D.material_override = player2_top_material

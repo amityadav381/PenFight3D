@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://btup0vbh2kcb"]
+[gd_scene load_steps=14 format=3 uid="uid://btup0vbh2kcb"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_7ljo0"]
 [ext_resource type="PackedScene" uid="uid://ruywunlp6wqx" path="res://scenes/hitter.tscn" id="2_3cwgs"]
+[ext_resource type="PackedScene" uid="uid://bqihefeqqb760" path="res://scenes/school_desk.tscn" id="2_4gq3i"]
 [ext_resource type="PackedScene" uid="uid://b8arxaa6u4qve" path="res://scenes/pen.tscn" id="4_o8d7k"]
 [ext_resource type="AudioStream" uid="uid://bjybhrcqeuoxn" path="res://assets/bg_music/Push-Long-Version(chosic.com).mp3" id="4_t5qqm"]
 [ext_resource type="PackedScene" uid="uid://dkfppnja20st4" path="res://scenes/crowd.tscn" id="5_llepm"]
@@ -17,20 +18,6 @@ sky_material = SubResource("ProceduralSkyMaterial_s7b8c")
 background_mode = 2
 sky = SubResource("Sky_fl6v2")
 tonemap_mode = 2
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wwd4m"]
-friction = 0.5
-bounce = 0.2
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_n2ifg"]
-size = Vector3(259.998, 10, 100.006)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gt2gm"]
-albedo_color = Color(0.283075, 0.353979, 0.414485, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_mwlsb"]
-material = SubResource("StandardMaterial3D_gt2gm")
-size = Vector3(260, 10, 100)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_05ica"]
 albedo_color = Color(0.118093, 0.156411, 0.19041, 1)
@@ -65,16 +52,7 @@ environment = SubResource("Environment_tt611")
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
 
-[node name="SchoolDesk" type="StaticBody3D" parent="."]
-physics_material_override = SubResource("PhysicsMaterial_wwd4m")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="SchoolDesk"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.481705, 0.00676632, 0.0034256)
-shape = SubResource("BoxShape3D_n2ifg")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SchoolDesk"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.48098, 0, 0)
-mesh = SubResource("BoxMesh_mwlsb")
+[node name="SchoolDesk" parent="." instance=ExtResource("2_4gq3i")]
 
 [node name="SchoolFloor" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -36, 0)
@@ -176,5 +154,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -169.032, 73, 20.7337)
 
 [node name="Crowd10" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 168.776, 73, -77.0446)
+
+[node name="Crowd11" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -76.6049, 73, 90.6009)
+
+[node name="Crowd12" parent="Crowd_TopNode" instance=ExtResource("5_llepm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 74.2629, 73, 92.5206)
 
 [connection signal="body_entered" from="SchoolFloor/Area3D" to="." method="_on_area_3d_body_entered"]

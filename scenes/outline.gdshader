@@ -2,13 +2,13 @@ shader_type spatial;
 
 void vertex() {
 	// Called for every vertex the material is visible on.
-	VERTEX = VERTEX*vec3(1.25, 1.20, 1.25);
+	VERTEX = VERTEX*vec3(4.0, 1.5, 4.0);
 }
 
 void fragment() {
 	// Called for every pixel the material is visible on.
 	ALBEDO = vec3(0.0);
-	ALPHA  = 1.0;
+	ALPHA  = 10000000.0;
 }
 
 //void light() {
